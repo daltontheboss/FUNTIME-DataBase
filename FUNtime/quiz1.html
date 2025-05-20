@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>FUNtime Quiz</title>
+    <style>
+        
+        body {
+            background-color: #ADD8E6; /* Light Blue */
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+          nav ul {
+            list-style-type: none;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        .quiz-container {
+            background-color: #656e9b;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 700px;
+        }
+
+        .question {
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #852626;
+            border-radius: 4px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .question:hover {
+            background-color: #10bdd0;
+            cursor: pointer;
+        }
+
+        .options {
+            list-style: none;
+            padding: 0;
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        .options li {
+            margin-bottom: 8px;
+        }
+
+        input[type="radio"],
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        button {
+            display: block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #3c4ea9;
+            color: rgb(101, 199, 126);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #240bb5;
+        }
+
+        #results-container {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div class="quiz-container">
+        <img src="logo.jpg" width="400" height="125">
+
+            <nav>
+                <ul>
+                    <a href="contact-us.html">
+                    <li>Contact</li></a>
+                    <a href="about-us.html">
+                    <li>About</li></a>
+                    <a href="login.html">
+                    <li>Login</li></a>
+                    <a href="homepage.html">
+                    <li>homepage</li></a>
+                </ul>
+            </nav>
+        <h1>Awesome Quiz</h1>
+        <form id="quiz-form">
+            <button type="submit">Submit Quiz</button>
+        </form>
+        <div id="results-container" style="display: none;">
+            <h2>Quiz Results</h2>
+            <p id="score"></p>
+            <p id="feedback"></p>
+        </div>
+        <audio id="cheerSound" src="cheer.mp3"></audio>
+        <audio id="passSound" src="pass.mp3"></audio>
+        <audio id="avgSound" src="avg.mp3"></audio>
+        <audio id="failSound" src="fail.mp3"></audio>
+        <audio id="mehSound" src="meh.mp3"></audio>
+        <audio id="fartSound" src="fart.mp3"></audio>
+        <audio id="boredSound" src="bored.mp3"></audio>
+    </div>
+
+    <script>
+        const quizContainer = document.getElementById('quiz-form');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreDisplay = document.getElementById('score');
+        const feedbackDisplay = document.getElementById('feedback');
+        const cheerSound = document.getElementById('cheerSound');
+
+        const questions = [
+            {
+                question: "What time do you go to bed?",
+                options: ["When the clock tells me to", "Exactly 6:54 p.m.", "I dont have a bed. I go to couch", "I sleep under the bridge"],
+                correctAnswer: "When the clock tells me to",
+                type: "radio",
+                points: 5
+            },
+            {
+                question: "What's your favorite of the three?",
+                options: ["Spaghetti", "Citrus", "Bottled water", "Meatloaf"],
+                correctAnswer: "Spaghetti",
+                type: "radio",
+                points: 5
+            },
+            {
+                question: "How many pickles does it take to unscrew a bud light?",
+                options: ["20", "6", "92", "Yellow"],
+                correctAnswer: "6",
+                type: "radio",
+                points: 5
+            },
+            {
+                question: "Select the sexiest sentence.",
+                options: ["Watermelon is Watery and melony", "I am unemployed and on heroin. But Im 6'4 and I promise Im loyal. All my exes just call me a cheater", "Slipping slices of salmon in slots for sloths", "So Says Sams Son"],
+                correctAnswer: "Slipping slices of salmon in slots for sloths",
+                type: "radio",
+                points: 5
+            },
+            {
+                question: "If you leave your door a jar, what does that mean?",
+                options: ["Open slightly", "Clothed", "Microscopic tadpole", "You left it something to jam with"],
+                correctAnswer: "You left it something to jam with",
+                type: "radio",
+                points: 5
+            },
+            {
+                question: "What do you call a toothpick with no points?",
+                options: ["A pointless toothpick", "Megatron", "John Cena", "It's pointless"],
+                correctAnswer: "A pointless toothpick",
+                type: "radio",
+                points: 5
+            },
+            {
+                question: "If you are unsure about how things look, you should:",
+                options: ["Get glasses", "reread the last question", "Steal your own eyes", "Steal an Optometrists eyes"],
+                correctAnswer: "Steal an Optometrists eyes",
+                type: "radio",
+                points: 5
+            },
+            {
+                question: "If you had 24 hours to live, but you could only be around strangers, which would you do?",
+                options: ["Cry. Like boo hoo", "Im probably sick so theres not much", "I can't swim!", "Tell strangers Im a lizard person who disquised itself as a frog, that disguised itself as a lemon, that disguised itself..."],
+                correctAnswer: "Tell strangers Im a lizard person who disquised itself as a frog, that disguised itself as a lemon, that disguised itself...",
+                type: "radio",
+                points: 5
+            },
+            {
+                question: "Its your best friends birthday.",
+                options: ["Thats a day to remember", "They gonna have cake?", "I'm the gift", "Singing happy birthday is illegal"],
+                correctAnswer: "Thats a day to remember",
+                type: "radio",
+                points: 5
+            },
+            {
+                question: "One of these questions is right, and I need to rest",
+                options: ["What are months?", "Whats the atomic mass of an atom of hydrogen and helium and nitrogen, smushed together by a vanta black hole?", "What's for dinner?", "Doggystyle anyone?"],
+                correctAnswer: "Whats the atomic mass of an atom of hydrogen and helium and nitrogen, smushed together by a vanta black hole?",
+                type: "radio",
+                points: 5
+            },
+            {
+                question: "What's for dinner?",
+                options: ["Fruit salad, just like those wigglin' dudes used to make", "Spaghetti", "Hamlett", "Alligator Tacos"],
+                correctAnswer: "Spaghetti",
+                type: "radio",
+                points: 5
+            },
+            {
+                question: "What's the purpose of an Apricot?",
+                options: ["It's a cot for april", "It's used in house cleaning", "It's a food", "April fool"],
+                correctAnswer: "It's a cot for april",
+                type: "radio",
+                points: 5
+            },
+            {
+                question: "Can pineapple ever go on pizza?",
+                options: ["No", "Yes", "Yes. Only if you're punishing your enemy", "Only on days that end in Z"],
+                correctAnswer: "Yes. Only if you're punishing your enemy",
+                type: "radio",
+                points: 5
+            },
+            {
+                question: "Odd. I've gone this long without making a joke. Which is not long?",
+                options: ["My hair", "My Weiner", "My teeth", "My bellybutton"],
+                correctAnswer: "My Weiner", 
+                type: "radio",
+                points: 5
+            },
+            {
+                question: "If you're still here, I'm very surprised. Why? I'm not gonna see the answer.",
+                options: ["I don't know what I'm doing. How did I get here? What's going on? What's the Internet? Why's it making clock noises?", "It's fun", "It's stupid", "It's diabolical"],
+                correctAnswer: "It's fun",
+                type: "radio",
+                points: 5
+            },
+            {
+                question: "How many are there?",
+                options: ["8", "23", "56", "69"],
+                correctAnswer: "23",
+                type: "radio",
+                points: 5
+            },
+            {
+                question: "-ERROR: Question called in sick-",
+                options: ["No, Because it's illegal", "Yes, do it all you want", "The best way to make a chicken sneeze is by tickling its tail feather while riding a skateboard, while your buddy eats puppies in the backyard", "Johnnys horse"],
+                correctAnswer: "The best way to make a chicken sneeze is by tickling its tail feather while riding a skateboard, while your buddy eats puppies in the backyard",
+                type: "radio",
+                points: 5
+            },
+            {
+                question: "Oh no! You've just been bitten by a radioactive clownfish! What's the next course of action?",
+                options: ["Amputation of the limb", "Eating germ assassins and anti radioactive healthy candy", "A bullet to the brain", "Kill your grandmother"],
+                correctAnswer: "Eating germ assassins and anti radioactive healthy candy",
+                type: "radio",
+                points: 5
+            },
+            {
+                question: "Pick the best two.",
+                options: ["Orange and lemon", "Two seperate eggs", "Blue and red", "Black and white"],
+                correctAnswer: "Blue and red",
+                type: "radio",
+                points: 5
+            },
+            {
+                question: "If you had fun, this answer should be easy.",
+                options: ["Pinecone", "The game just flabbered my gast", "My esophegus", "Nothing makes sense "],
+                correctAnswer: "The game just flabbered my gast", 
+                type: "radio",
+                points: 5
+            }
+        ];
+
+        function displayQuestions() {
+            questions.forEach((questionData, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+                questionDiv.innerHTML = `<p>${index + 1}. ${questionData.question}</p>`;
+
+                const optionsList = document.createElement('ul');
+                optionsList.classList.add('options');
+
+                questionData.options.forEach(option => {
+                    const listItem = document.createElement('li');
+                    const input = document.createElement('input');
+                    input.type = questionData.type;
+                    input.name = `question-${index}`;
+                    input.value = option;
+                    input.id = `q${index}-${option.replace(/ /g, '_')}`; // Unique ID for label association
+
+                    const label = document.createElement('label');
+                    label.textContent = option;
+                    label.setAttribute('for', `q${index}-${option.replace(/ /g, '_')}`);
+
+                    listItem.appendChild(input);
+                    listItem.appendChild(label);
+                    optionsList.appendChild(listItem);
+                });
+
+                questionDiv.appendChild(optionsList);
+                quizContainer.insertBefore(questionDiv, document.querySelector('button[type="submit"]'));
+            });
+        }
+
+        function calculateScore() {
+            let score = 0;
+            questions.forEach((questionData, index) => {
+                const selectedOptions = Array.from(quizContainer.querySelectorAll(`input[name="question-${index}"]:checked`)).map(input => input.value);
+
+                if (questionData.type === 'radio') {
+                    if (selectedOptions[0] === questionData.correctAnswer) {
+                        score += questionData.points;
+                    }
+                } else if (questionData.type === 'checkbox') {
+                    const isCorrect = questionData.correctAnswer.length === selectedOptions.length && questionData.correctAnswer.every(item => selectedOptions.includes(item));
+                    if (isCorrect) {
+                        score += questionData.points;
+                    }
+                }
+            });
+            return score;
+        }
+
+        quizContainer.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const finalScore = calculateScore();
+            scoreDisplay.textContent = `Your Score: ${finalScore} / 100`; 
+            let feedbackText = "";
+
+            if (finalScore >= 80) {
+                feedbackText = "Alright, Smartass!! Boredom is as dumb as a board, You need to find the key to nonsense. You are a Bored Board.";
+                boredSound.play();
+            } else if (finalScore >= 60) {
+                feedbackText = "I'm just glad you had some fun. Even at my expenses. You are a high priced Zelephant.";
+                mehSound.play();
+            } else if (finalScore >= 40) {
+                feedbackText = "How was your last vacation in the dream you had about being on vacation? You are a Vaca-Dreamer!";
+                avgSound.play();
+            } else if (finalScore >= 20) {
+                feedbackText = "Daaaamn, like its Friday. You had a blast like it's sonic. You wine and dine like a baby. I'm stacking similes like Lil' Wayne. You are a Treehouse Rat Tattooer.";
+                fartSound.play();
+            } else if (finalScore <= 20) {
+                feedbackText = "You stink, just like my grandmas armpits. Maybe even as bad as this fart!"
+                failSound.play()
+            }
+            feedbackDisplay.textContent = feedbackText;
+
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            });
+
+        displayQuestions();
+    </script>
+    </body>
+</html>

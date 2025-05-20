@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About the Developer</title>
+    <link rel="stylesheet" href="styles.css"> </head>
+<body>
+    <header>
+        <h1>About the Developer</h1>
+        </header>
+
+        <style>
+            body {
+                font-family: sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4; /* Light background */
+                color: #333; /* Dark text */
+                line-height: 1.6;
+            }
+
+            
+         nav ul {
+            list-style-type: none;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+            
+            header {
+                background-color: #a7b5c3; /* Dark header background */
+                color: rgb(78, 31, 31);
+                padding: 2rem 0;
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+            
+            header h1 {
+                font-size: 2.5rem;
+                margin-bottom: 0.5rem;
+                
+            }
+            
+            section {
+                padding: 3rem 20px;
+                max-width: 1200px;
+                margin: 0 auto;
+                background-color: white;
+                margin-bottom: 2rem;
+                border-radius: 8px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            }
+            
+            section h2 {
+                font-size: 2rem;
+                color: #e74c3c; /* Accent color for headings */
+                margin-bottom: 1.5rem;
+                text-align: center;
+                position: relative;
+                padding-bottom: 0.5rem;
+                border-bottom: 3px solid #e74c3c; /* Underline for headings */
+            }
+            
+            /* Introduction Section */
+            #introduction {
+                display: flex;
+                align-items: center;
+                gap: 2rem;
+                padding: 3rem;
+            }
+            
+            .profile-image {
+                border-radius: 50%;
+                overflow: hidden;
+                width: 150px;
+                height: 150px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+            
+            .profile-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            
+            .introduction-text h2 {
+                text-align: left;
+                border-bottom: none;
+                color: #3498db; /* Different accent for intro heading */
+            }
+            
+            .introduction-text p {
+                margin-bottom: 1rem;
+            }
+            
+            /* Skills Section */
+            #skills .skills-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
+            
+            .skill-item {
+                background-color: #f9f9f9;
+                padding: 1.5rem;
+                border-radius: 6px;
+                border: 1px solid #ddd;
+            }
+            
+            .skill-item h3 {
+                font-size: 1.2rem;
+                color: #2c3e50;
+                margin-top: 0;
+                margin-bottom: 0.75rem;
+            }
+            
+            .skill-item ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .skill-item li {
+                padding: 0.25rem 0;
+                color: #555;
+            }
+            
+            /* Experience Section */
+            #experience .experience-timeline {
+                position: relative;
+                padding: 1rem 0;
+            }
+            
+            #experience .experience-timeline::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 50%;
+                width: 2px;
+                background-color: #3498db; /* Timeline line color */
+                transform: translateX(-50%);
+            }
+            
+            .timeline-item {
+                margin-bottom: 2rem;
+                position: relative;
+            }
+            
+            .timeline-item:nth-child(odd) .timeline-content {
+                text-align: right;
+                padding-right: 1.5rem;
+                margin-left: 50px;
+            }
+            
+            .timeline-item:nth-child(even) .timeline-content {
+                text-align: left;
+                padding-left: 1.5rem;
+                margin-right: 50px;
+            }
+            
+            .timeline-date {
+                position: absolute;
+                top: 0.5rem;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: #3498db;
+                color: white;
+                padding: 0.5rem 1rem;
+                border-radius: 5px;
+                font-size: 0.9rem;
+            }
+            
+            .timeline-content {
+                background-color: white;
+                padding: 1rem;
+                border-radius: 6px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            
+            .timeline-content h3 {
+                margin-top: 0;
+                color: #2c3e50;
+            }
+            
+            /* Passion Projects Section */
+            #passion-projects .projects-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1.5rem;
+            }
+            
+            .project-card {
+                background-color: white;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+            }
+            
+            .project-card img {
+                width: 100%;
+                height: auto;
+                display: block;
+            }
+            
+            .project-card h3 {
+                padding: 1rem;
+                margin-top: 0;
+                color: #e74c3c;
+            }
+            
+            .project-card p {
+                padding: 0 1rem 1rem;
+                color: #555;
+            }
+            
+            .project-card a {
+                display: block;
+                background-color: #3498db;
+                color: white;
+                text-align: center;
+                padding: 1rem;
+                text-decoration: none;
+                transition: background-color 0.3s ease;
+            }
+            
+            .project-card a:hover {
+                background-color: #2980b9;
+            }
+            
+            /* Connect Section */
+            #connect {
+                text-align: center;
+            }
+            
+            .social-links {
+                margin-top: 1rem;
+            }
+            
+            .social-links a {
+                display: inline-block;
+                margin: 0 1rem;
+            }
+            
+            .social-links img {
+                width: 30px;
+                height: 30px;
+                vertical-align: middle;
+            }
+            
+            .social-links a:last-child {
+                text-decoration: none;
+                color: #3498db;
+                font-weight: bold;
+            }
+            
+            .social-links a:last-child:hover {
+                text-decoration: underline;
+            }
+            
+            /* Footer */
+            footer {
+                text-align: center;
+                padding: 1rem 0;
+                background-color: #333;
+                color: white;
+                font-size: 0.9rem;
+                margin-top: 2rem;
+                border-radius: 0 0 8px 8px;
+            }
+            
+            /* Responsive Design */
+            @media (max-width: 768px) {
+                #introduction {
+                    flex-direction: column;
+                    text-align: center;
+                }
+            
+                .profile-image {
+                    margin-bottom: 1rem;
+                }
+            
+                #experience .experience-timeline::before {
+                    left: 20px;
+                }
+            
+                .timeline-item:nth-child(odd) .timeline-content,
+                .timeline-item:nth-child(even) .timeline-content {
+                    text-align: left;
+                    margin-left: 50px;
+                    margin-right: 20px;
+                }
+            
+                .timeline-date {
+                    left: 20px;
+                    transform: translateX(0);
+                }
+            }
+        </style>
+
+        <header>
+            <div class="container">
+                <nav>
+                    <ul>
+                    <a href="contact-us.html">
+                    <li>Contact</li></a>
+                    <a href="login.html">
+                    <li>Login</li></a>
+                    <a href="homepage.html">
+                    <li>homepage</li></a>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+    <section id="introduction">
+        <div class="profile-image">
+            <img src="morgan.jpg" alt="Your Profile Picture">
+        </div>
+        <div class="introduction-text">
+            <h2>Hello there!</h2>
+            <p>I'm [Dalton McCormick], a passionate and dedicated developer with a love for crafting innovative and user-friendly digital experiences. My journey in the world of code began when i started reading into html and css, and since then, I've been constantly learning and evolving my skills to build impactful solutions.</p>
+            <p>I believe in the power of technology to broaden the aspects of networking and growing the industry. This drives me to approach every project with enthusiasm and a commitment to excellence.</p>
+            </div>
+    </section>
+
+    <section id="skills">
+        <h2>Skills & Expertise</h2>
+        <div class="skills-grid">
+            <div class="skill-item">
+                <h3>Front-End</h3>
+                <ul>
+                    <li>HTML fluent</li>
+                    <li>CSS fluent</li>
+                    <li>JavaScript (ES6+)</li>
+                    <li>[I create beats and I also code for fun]</li>
+                    <li>[Powerful Microsoft Word knowledge]</li>
+                </ul>
+            </div>
+    
+            <div class="skill-item">
+                <h3>Other</h3>
+                <ul>
+                    <li>Version Control (Git)</li>
+                    <li>[Google Cloud]</li>
+                    <li>[Listening skills]</li>
+                    <li>[VS Code knowledge]</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience">
+        <h2>My Journey</h2>
+
+                <div class="timeline-content">
+                    <h3>[Freelance]</h3>
+                    <p>[Right now, I'm focusing on better understanding of web development].</p>
+                </div>
+            </div>
+                <div class="timeline-content">
+                    <h3>[FUNtime quizzes]</h3>
+                    <p>[A DataBase for testing on 10 random quizzes].</p>
+                </div>
+    </section>
+
+    <section id="passion-projects">
+        <h2>Passion Projects</h2>
+        <div class="projects-contrast">
+        <div class="projects-grid">
+        <div class="project-card">
+            <img src="Ugly.jpg" alt="Project 1" width="400" height="300" title="Unknown">
+            <h3>[(Quiz 1)The Awesome Quiz]</h3>
+            <p>[The Awesome Quiz contains 20 questions of complete randomness (FEATURED)].</p>
+            <a href="quiz1.html">click here</a>
+        </div>
+        </div>
+        </div>
+            <div class="projects-grid">
+            <div class="project-card">
+                <img src="me.jpg" alt="Project 2" width="400" height="300" title="Unknown">
+                <h3>[(Quiz 2)]</h3>
+                <p>[?].</p>
+                <a href="quiz2.html">click here</a>
+            </div>
+        </div>
+        <div class="projects-grid">
+            <div class="project-card">
+                <img src="me3.jpg" alt="Project 3" width="400" height="300" title="Unknown">
+                <h3>[(Quiz 3)The Vulgar Pop Culture Quiz]</h3>
+                <p>[The Vulgar Pop Culture Quiz is a 12 question quiz made for your entertainment].</p>
+                <a href="quiz3.html">click here</a>
+            </div>
+            <div class="projects-grid"></div>
+            <div class="project-card">
+                <img src="sourCream.jpg" alt="Project 4" width="400" height="300" title="Unknown">
+                <h3>[(Quiz 4)]</h3>
+                <p>[?].</p>
+                <a href="quiz4.html">click here</a>
+            </div>
+        </div>
+        <div class="projects-grid">
+            <div class="project-card">
+                <img src="poop.jpg" alt="Project 5" width="400" height="300" title="Unknown">
+                <h3>[(Quiz 5)]</h3>
+                <p>[?].</p>
+                <a href="quiz5.html">click here</a>
+            </div>
+            <div class="projects-grid"></div>
+            <div class="project-card">
+                <img src="fat.jpg" alt="Project 6" width="400" height="300" title="Unknown">
+                <h3>[?]</h3>
+                <p>[?].</p>
+                <a href="quiz6.html">click here</a>
+            </div>
+        </div>
+        <div class="projects-grid">
+            <div class="project-card">
+                <img src=".jpg" alt="Project 7" width="400" height="300" title="Unknown">
+                <h3>[?]</h3>
+                <p>[?].</p>
+                <a href="quiz7.html">click here</a>
+            </div>
+            <div class="projects-grid"></div>
+            <div class="project-card">
+                <img src=".jpg" alt="Project 8" width="400" height="300" title="Unknown">
+                <h3>[?]</h3>
+                <p>[?].</p>
+                <a href="quiz8.html">click here</a>
+            </div>
+        </div>
+        <div class="projects-grid">
+            <div class="project-card">>
+                <img src=".jpg" alt="Project 9" width="400" height="300" title="Unknown">
+                <h3>[?]</h3>
+                <p>[?].</p>
+                <a href="quiz9.html">click here</a>
+            </div>
+            <div class="projects-grid"></div>
+            <div class="project-card">
+                <img src=".jpg" alt="Project 10" width="400" height="300" title="Unknown">
+                <h3>[?]</h3>
+                <p>[?].</p>
+                <a href="quiz10.html">click here</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="connect">
+        <h2>Remember!</h2>
+        <h4>Test(s) are under development</h4>
+        <p>I'm always open to new opportunities and collaborations. Feel free to reach out!</p>
+    </section>
+
+    <footer>
+        <p>&copy; [2025] [FUNsite DataBase]. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Optional: Add some subtle interactive elements with JavaScript later
+
+        const skillItems = document.querySelectorAll('.skill-item');
+
+        skillItems.forEach(item => {
+            item.addEventListener('mouseover', function() {
+                this.style.backgroundColor = '#e0f7fa'; // Light blue on hover
+                this.style.transform = 'scale(1.05)'; // Slightly scale up
+                this.style.transition = 'background-color 0.3s ease, transform 0.3s ease';
+            });
+
+            item.addEventListener('mouseout', function() {
+                this.style.backgroundColor = '#f9f9f9'; // Revert to original background
+                this.style.transform = 'scale(1)'; // Revert to original size
+                this.style.transition = 'background-color 0.3s ease, transform 0.3s ease';
+            });
+        });
+
+        // Optional: You could add more interactive elements here,
+        // like animating the timeline or project cards on scroll.
+
+    </script>
+</body>
+</html>

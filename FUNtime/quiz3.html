@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Vulgar Pop Culture Gauntlet</title>
+    <style>
+
+        h1 {
+            text-align: center;
+            
+        }
+
+        body {
+            text-align: center;
+            background-color: #c2cdd1; /* Light Blue */
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        nav ul {
+            list-style-type: none;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        .quiz-container {
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #331515;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 6px rgba(123, 69, 69, 0.1);
+            width: 80%;
+            max-width: 700px;
+        }
+
+        .question {
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #000000;
+            border-radius: 4px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .question:hover {
+            background-color: #baccce;
+            cursor: pointer;
+        }
+
+        .options {
+            list-style: none;
+            padding: 0;
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        .options li {
+            margin-bottom: 8px;
+        }
+
+        input[type="radio"],
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        button {
+            display: block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #e2e6ea;
+            color: rgb(101, 199, 126);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #d41313;
+        }
+
+        #results-container {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div id="quiz-container">
+        <h1>The Vulgar Pop Culture Quiz</h1>
+         <img src="logo.jpg" width="400" height="125">
+
+            <nav>
+                <ul>
+                    <a href="contact-us.html">
+                    <li>Contact</li></a>
+                    <a href="about-us.html">
+                    <li>About</li></a>
+                    <a href="login.html">
+                    <li>Login</li></a>
+                    <a href="homepage.html">
+                    <li>homepage</li></a>
+                </ul>
+            </nav>
+        <form id="quiz-form">
+            <button type="submit">Submit Quiz</button>
+        </form>
+        <div id="results-container" style="display: none;">
+            <h2>Quiz Results</h2>
+            <p id="score"></p>
+            <p id="feedback"></p>
+        </div>
+        <audio id="cheerSound" src="cheer.mp3"></audio>
+        <audio id="mehSound" src="meh.mp3"></audio>
+        <audio id="fartSound" src="fart.mp3"></audio>
+        <audio id="damnSound" src="damn.mp3"></audio>
+        <audio id="vacaSound" src="vaca-dreamer.mp3"></audio>
+        <audio id="boredSound" src="bored.mp3"></audio>
+    </div>
+
+    <script>
+        
+        const quizContainer = document.getElementById('quiz-form');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreDisplay = document.getElementById('score');
+        const feedbackDisplay = document.getElementById('feedback');
+        const cheerSound = document.getElementById('cheerSound');
+
+        function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+      
+        const questions = [
+            {
+                question: "What did the Dragonborn say to the dragon?",
+                options: ["Greetings, Traveler", "Over 9000", "Orange is the new black", "Fus Ro Dah"],
+                type: "radio",
+                correctAnswer: "Fus Ro Dah",
+                points: 4
+            },
+            {
+                question: "Where did Hansel find Gretel?",
+                options: ["In the oven", "In the bathroom", "In the basement", "Chernobyl"],
+                type: "radio",
+                correctAnswer: "In the oven",
+                points: 4
+            },
+            {
+                question: "What color is Spongebob's feet?",
+                options: ["Salty", "Stinky", "Yellow", "Sponge"],
+                type: "radio",
+                correctAnswer: "Yellow",
+                points: 4
+            },
+            {
+                question: "What did Bill Nye do in 'Bill Nye, the Science Guy'?",
+                options: ["Hotdog sandwich", "Funny things", "The patty-cake", "Himself"],
+                type: "radio",
+                correctAnswer: "Funny things",
+                points: 4
+            },
+            {
+                question: "What was the forecast for 'Cloudy with a chance of Meatballs'?",
+                options: ["BBQ", "Cloudy", "Scattered showers", "Meteor showers"],
+                type: "radio",
+                correctAnswer: "Meatier showers",
+                points: 4
+            },
+            {
+                question: "Where did Grandma go?",
+                options: ["Under the rainbow", "Under the reindeer", "Marshall Medical", "The Mile High Club"],
+                type: "radio",
+                correctAnswer: "Under the reindeer",
+                points: 4
+            },
+            {
+                question: "Where did Malcolm run off to?",
+                options: ["X-Games", "The Gym", "The middle", "Spencers"],
+                type: "radio",
+                correctAnswer: "The middle",
+                points: 4
+            },
+            {
+                question: "What did Elon Musk say to the Amish?",
+                options: ["Bless you", "Where's your horse", "Give me some space", "Gabba Goo"],
+                type: "radio",
+                correctAnswer: "Give me some space",
+                points: 4
+            },
+            {
+                question: "In the movie 'Cars', What did McQueen say to the tow truck?",
+                options: ["You Pist-On me", "Later, Mater", "I need a lift, feller", "I'm out of ethanol"],
+                type: "radio",
+                correctAnswer: "Later, Mater",
+                points: 4
+            },
+            {
+                question: "Select all that apply: If you were to come face to face with Darth Vader, How would you defeat him?",
+                options: ["Eat a banana", "Use your lightsaber", "Cut your toenails", "Use the force"],
+                type: "checkbox",
+                correctAnswer: ["Use the force", "Use your lightsaber"],
+                points: 4
+            },
+            {
+                question: "Select all that apply: What are the ingredients for a crabby patty?",
+                options: ["Secret formula", "Ask Plankton", "Vanilla extract", "Cajun butt rub"],
+                type: "checkbox",
+                correctAnswer: ["Secret formula", "Ask Plankton"],
+                points: 4
+            },
+            {
+                question: "How many reindeer are needed to complete Santa's sleigh?",
+                options: ["23", "9", "As many as it takes to get his fat butt off of the ground", "Just 1. My Grandmother"],
+                type: "radio",
+                correctAnswer: "9",
+                points: 4
+            },
+            {
+                question: "What animal is seen in the show 'Family Guy'?",
+                options: ["Cat", "Brian", "Dog", "Beluga"],
+                type: "radio",
+                correctAnswer: "Dog",
+                points: 4
+            },
+            {
+                question: "Why wouldn't you argue going down the road in 'Supernatural'?",
+                options: ["You'd get T-Boned by a truck", "You'd roll into a ditch", "You'd crash into the front of a Dunkin' Donuts", "Clowns would kidnap you and take you to the NIKE Headquarters"],
+                type: "radio",
+                correctAnswer: "You'd get T-Boned by a truck",
+                points: 4
+            },
+            {
+                question: "Select all that apply: What would Spongebob need in order to go jellyfishing?",
+                options: ["Patrick Starfish", "Mr. Krabs", "A net", "John Cena"],
+                type: "checkbox",
+                correctAnswer: ["A net", "Patrick Starfish"],
+                points: 4
+            },
+            {
+                question: "What does it mean if someone Ricks your Morty?",
+                options: ["They eat your potato salad.", "they bring you on a dangerous journey.", "They prank you with a plumbus", "They love you like a grandfather should"],
+                type: "radio",
+                correctAnswer: "They prank you with a plumbus",
+                points: 4
+            },
+            {
+                question: "What if you caught Batman robbin'?",
+                options: ["Tell him “your dick's grey, son!'", "Check to see if he laughs, then run.", "Call the Joker", "Call Superman "],
+                type: "radio",
+                correctAnswer: "Tell him “your dick's grey, son!'",
+                points: 4
+            },
+            {
+                question: "The patient presents with gynecomastia, he's got breasts bigger than Cuddys. He also can't seem to remember his name. Or if he is on drugs. Whats causing an athlete to turn into a male bra model?",
+                options: ["Autoimmune", "Infection", "It's definitely not lupus", "Cancer"],
+                type: "radio",
+                correctAnswer: "It's definitely not lupus",
+                points: 4
+            },
+            {
+                question: "What do you get when you mix paint with a bush and multiply with hair? ",
+                options: ["Tom Holland", "Afro ninja", "Bob Ross", "Toshiba 6ix9ine"],
+                type: "radio",
+                correctAnswer: "Bob Ross",
+                points: 4
+            },
+            {
+                question: "Select all that apply: If Sam and Dean found the magic beans which are most likely to happen?",
+                options: ["Adam will get out of hell", "The giant will die", "Cas won't understand this reference", "Sam will choose to eat real bacon", "Dean will drink a healthy, but disgusting smoothie.", "Dean will want pie"],
+                type: "checkbox",
+                correctAnswer: ["Dean will want pie", "The giant will die", "Cas won't understand this reference"],
+                points: 4
+            },
+            {
+                question: "Who would you thank if you loved to go to Walmart?",
+                options: ["Harrison Chevy", "Sam Walton", "Dave Martwal", "Kohl Targèt"],
+                type: "radio",
+                correctAnswer: "Sam Walton",
+                points: 4
+            },
+            {
+                question: "If you're free to lay, what's on your shoulder?",
+                options: ["A parrot.", "Condensed milk", "A chip.", "An Angel and a devil"],
+                type: "radio",
+                correctAnswer:"A chip.",
+                points: 4
+            },
+            {
+                question: "If you're into daddy cops with daddy cop walks and daddy cop butts, who's the best to get arrested by?",
+                options: ["Jim Gordon", "John Nolan", "Agent Hendrickson", "Clancy Wiggum"],
+                type: "radio",
+                correctAnswer: "John Nolan",
+                points: 4
+            },
+            {
+                question: "Which of these is not for kids.",
+                options: ["Trix", "Animated watermelons", "The song 'The Kids'", "McDonald's Happy meal"],
+                type: "radio",
+                correctAnswer: "The song 'The Kids'",
+                points: 4
+            },
+            {
+                question: "What tastes like toothpaste, is black like charcoal, and is sold in every store?",
+                options: ["Dog food.", "Crest with charcoal stain fighting action 3x cavity remover with window and motor cleaner.", "Bags of cremated unloved ones", "Charcoal toothpaste."],
+                type: "radio",
+                correctAnswer: "Charcoal toothpaste.",
+                points: 4
+            },
+
+        ];
+
+        let question = [
+        
+            {id: 1, text: "Question 1"},
+            {id: 2, text: "Question 2"},
+            {id: 3, text: "Question 3"},
+            {id: 4, text: "Question 4"},
+            {id: 5, text: "Question 5"},
+            {id: 6, text: "Question 6"},
+            {id: 7, text: "Question 7"},
+            {id: 8, text: "Question 8"},
+            {id: 9, text: "Question 9"},
+            {id: 10, text: "Question 10"},
+            {id: 11, text: "Question 11"},
+            {id: 12, text: "Question 12"},
+            {id: 13, text: "Question 13"},
+            {id: 14, text: "Question 14"},
+            {id: 15, text: "Question 15"},
+            {id: 16, text: "Question 16"},
+            {id: 17, text: "Question 17"},
+            {id: 18, text: "Question 18"},
+            {id: 19, text: "Question 19"},
+            {id: 20, text: "Question 20"},
+            {id: 21, text: "Question 21"},
+            {id: 22, text: "Question 22"},
+            {id: 23, text: "Question 23"},
+            {id: 24, text: "Question 24"},
+            {id: 25, text: "Question 25"}
+            ];
+
+            questions.sort(() => Math.random() - 0.5);
+
+            
+        function displayQuestions() {
+            questions.forEach((questionData, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+                questionDiv.innerHTML = `<p>${index + 1}. ${questionData.question}</p>`;
+
+                const optionsList = document.createElement('ul');
+                optionsList.classList.add('options');
+
+                questionData.options.forEach(option => {
+                    const listItem = document.createElement('li');
+                    const input = document.createElement('input');
+                    input.type = questionData.type;
+                    input.name = `question-${index}`;
+                    input.value = option;
+                    input.id = `q${index}-${option.replace(/ /g, '_')}`; // Unique ID for label association
+
+                    const label = document.createElement('label');
+                    label.textContent = option;
+                    label.setAttribute('for', `q${index}-${option.replace(/ /g, '_')}`);
+
+                    listItem.appendChild(input);
+                    listItem.appendChild(label);
+                    optionsList.appendChild(listItem);
+                });
+
+                questionDiv.appendChild(optionsList);
+                quizContainer.insertBefore(questionDiv, document.querySelector('button[type="submit"]'));
+            });
+        }
+
+        function calculateScore() {
+            let score = 0;
+            questions.forEach((questionData, index) => {
+                const selectedOptions = Array.from(quizContainer.querySelectorAll(`input[name="question-${index}"]:checked`)).map(input => input.value);
+
+                if (questionData.type === 'radio') {
+                    if (selectedOptions[0] === questionData.correctAnswer) {
+                        score += questionData.points;
+                    }
+                } else if (questionData.type === 'checkbox') {
+                    const isCorrect = questionData.correctAnswer.length === selectedOptions.length && questionData.correctAnswer.every(item => selectedOptions.includes(item));
+                    if (isCorrect) {
+                        score += questionData.points;
+                    }
+                }
+            });
+            return score;
+        }
+
+        quizContainer.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const finalScore = calculateScore();
+            scoreDisplay.textContent = `Your Score: ${finalScore} / 100`; 
+            let feedbackText = "";
+
+            if (finalScore >= 80) {
+                feedbackText = "Alright, Smartass!! Boredom is as dumb as a board, You need to find the key to nonsense. You are a Bored Board.";
+                boredSound.play();
+            } else if (finalScore >= 60) {
+                feedbackText = "I'm just glad you had some fun. Even at my expenses. You are a high priced Zelephant.";
+                avgSound.play();
+            } else if (finalScore >= 40) {
+                feedbackText = "How was your last vacation in the dream you had about being on vacation? You are a Vaca-Dreamer!";
+                vacaSound.play();
+            } else if (finalScore >= 20) {
+                feedbackText = "Daaaamn, like its Friday. You had a blast like it's sonic. You wine and dine like a baby. I'm stacking similes like Lil' Wayne. You are a Treehouse Rat Tattooer.";
+                damnSound.play();
+            } else if (finalScore <= 20) {
+                feedbackText = "Wow! You just made a 20 or less. You lick donkey teeth.";
+                fartSound.play();
+            }
+            feedbackDisplay.textContent = feedbackText;
+
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            });
+
+        displayQuestions();
+    </script>
+    </script>
+</body>
+</html>

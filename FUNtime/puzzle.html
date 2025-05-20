@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puzzle Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Image Puzzle</h1>
+        <div id="puzzle-area">
+            <div id="puzzle-pieces">
+                </div>
+            <div id="puzzle-board">
+                </div>
+        </div>
+        <button id="reset-button">Reset Puzzle</button>
+    </div>
+    <script src="script.js"></script>
+
+    <style>
+        body {
+    font-family: 'Times New Roman', 'Arial Narrow Bold', 'Franklin Gothic Medium', 'Arial Narrow';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #6e6d6d;
+    margin: 0;
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+
+#puzzle-area {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+#puzzle-pieces {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 80px); /* Adjust piece size */
+    gap: 4px;
+    border: 1px solid #ccc;
+    padding: 8px;
+    background-color: #4d4949;
+}
+
+.puzzle-piece {
+    width: 40px; /* Adjust piece size */
+    height: 40px; /* Adjust piece size */
+    border: 1px solid #777;
+    cursor: grab;
+    background-size: cover;
+    background-repeat: no-repeat;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    position: relative; /* For stacking order during drag */
+}
+
+.puzzle-piece.dragging {
+    opacity: 0.7;
+    z-index: 10;
+}
+
+#puzzle-board {
+    width: 320px; /* Adjust based on piece size and grid */
+    height: 320px; /* Adjust based on piece size and grid */
+    border: 2px solid #aaa;
+    position: relative; /* To position drop targets absolutely */
+    background-color: #ddd;
+}
+
+.drop-target {
+    width: 40px; /* Match piece size */
+    height: 40px; /* Match piece size */
+    position: absolute;
+    /* Optional: Style drop targets for visual cues */
+    /* border: 1px dashed #999; */
+    box-sizing: border-box; /* Important for accurate positioning */
+}
+
+.drop-target.hovering {
+    background-color: rgba(0, 255, 0, 0.416); /* Visual feedback on hover */
+}
+
+.drop-target.filled {
+    /* Style for when a piece is correctly placed */
+    border: none;
+}
+
+#reset-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #1d8206;
+    color: white;
+}
+
+#reset-button:hover {
+    background-color: #75b879;
+}
+    </style>
+    
+<script>
+const puzzlePiecesContainer = document.getElementById('puzzle-pieces');
+const puzzleBoard = document.getElementById('puzzle-board');
+const resetButton = document.getElementById('reset-button');
+const imageSrc = 'morgan.jpg'; // **REPLACE WITH YOUR IMAGE PATH**
+const gridSize = 4; // Number of rows and columns
+const pieceSize = 80; // Must match CSS
+
+let pieces = [];
+let dropTargets = [];
+let draggedPiece = null;
+let draggedElement = null;
+let originalPosition = {};
+const puzzleSlots = document.querySelectorAll('.puzzle-slot');
+const puzzlePieces = document.querySelectorAll('.puzzle-piece');
+const puzzleContainer = document.querySelector('.puzzle-container'); // Assuming a container for the initial pieces
+
+
+// Preload the image
+const puzzleImage = new Image();
+puzzleImage.onload = initializePuzzle;
+puzzleImage.src = imageSrc;
+
+function initializePuzzle() {
+    splitImage();
+    createDropTargets();
+    shufflePieces();
+    setupDragAndDrop();
+}
+
+function splitImage() {
+    for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+            const piece = document.createElement('div');
+            piece.classList.add('puzzle-piece');
+            piece.style.width = `${pieceSize}px`;
+            piece.style.height = `${pieceSize}px`;
+            piece.style.backgroundImage = `url(${imageSrc})`;
+            piece.style.backgroundPosition = `-${j * pieceSize}px -${i * pieceSize}px`;
+            piece.dataset.row = i;
+            piece.dataset.col = j;
+            pieces.push(piece);
+        }
+    }
+}
+
+function createDropTargets() {
+    for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+            const target = document.createElement('div');
+            target.classList.add('drop-target');
+            target.style.width = `${pieceSize}px`;
+            target.style.height = `${pieceSize}px`;
+            target.style.left = `${j * pieceSize}px`;
+            target.style.top = `${i * pieceSize}px`;
+            target.dataset.row = i;
+            target.dataset.col = j;
+            puzzleBoard.appendChild(target);
+            dropTargets.push(target);
+        }
+    }
+}
+
+function shufflePieces() {
+    // Simple Fisher-Yates shuffle
+    for (let i = pieces.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pieces[i], pieces[j]] = [pieces[j], pieces[i]];
+    }
+    pieces.forEach(piece => puzzlePiecesContainer.appendChild(piece));
+}
+
+function setupDragAndDrop() {
+    pieces.forEach(piece => {
+        piece.addEventListener('dragstart', handleDragStart);
+        piece.addEventListener('dragend', handleDragEnd);
+    });
+
+    dropTargets.forEach(target => {
+        target.addEventListener('dragover', handleDragOver);
+        target.addEventListener('drop', handleDrop);
+        target.addEventListener('dragenter', handleDragEnter);
+        target.addEventListener('dragleave', handleDragLeave);
+    });
+}
+
+function handleDragStart(e) {
+    draggedPiece = this;
+    this.classList.add('dragging');
+}
+
+function handleDragEnd() {
+    if (draggedPiece) {
+        draggedPiece.classList.remove('dragging');
+        draggedPiece = null;
+    }
+}
+
+function handleDragOver(e) {
+    e.preventDefault(); // Allow drop
+}
+
+function handleDragEnter(e) {
+    this.classList.add('hovering');
+}
+
+function handleDragLeave(e) {
+    this.classList.remove('hovering');
+}
+
+function handleDrop(e) {
+    this.classList.remove('hovering');
+
+    if (!draggedPiece || this.classList.contains('filled')) {
+        return;
+    }
+
+    const targetRow = parseInt(this.dataset.row);
+    const targetCol = parseInt(this.dataset.col);
+    const pieceRow = parseInt(draggedPiece.dataset.row);
+    const pieceCol = parseInt(draggedPiece.dataset.col);
+
+    if (targetRow === pieceRow && targetCol === pieceCol) {
+        this.appendChild(draggedPiece);
+        draggedPiece.style.position = 'absolute';
+        draggedPiece.style.left = '0';
+        draggedPiece.style.top = '0';
+        this.classList.add('filled');
+        draggedPiece.setAttribute('draggable', false);
+        checkWin();
+    } else {
+        // Optional: Provide visual feedback for incorrect placement
+        console.log("Incorrect placement");
+    }
+}
+
+function checkWin() {
+    const filledTargets = puzzleBoard.querySelectorAll('.drop-target.filled');
+    if (filledTargets.length === gridSize * gridSize) {
+        alert('You solved the puzzle!');
+        // Optional: Disable further dragging or show a congratulatory message
+    }
+}
+
+// Allow drop back into the original container
+originalContainer.addEventListener('dragover', (event) => {
+  event.preventDefault();
+});
+
+originalContainer.addEventListener('drop', (event) => {
+  event.preventDefault();
+  if (draggedPiece) {
+    originalContainer.appendChild(draggedPiece);
+    draggedPiece = null;
+  }
+});
+
+// Initially place the pieces in the original container
+puzzlePieces.forEach(piece => {
+  originalContainer.appendChild(piece);
+},)
+
+resetButton.addEventListener('click', resetPuzzle);
+
+function resetPuzzle() {
+    // Clear the board
+    dropTargets.forEach(target => {
+        target.classList.remove('filled');
+        const piece = target.firstChild;
+        if (piece) {
+            puzzlePiecesContainer.appendChild(piece);
+            piece.style.position = 'relative';
+            piece.style.left = 'auto';
+            piece.style.top = 'auto';
+            piece.setAttribute('draggable', true);
+        }
+    });
+    shufflePieces();
+}
+</script>
+</body>
+</html>

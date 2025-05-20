@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>FUNtime Quiz 4</title>
+    <style>
+        
+        body {
+            background-color: #0a4d63; /* Light Blue */
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+          nav ul {
+            list-style-type: none;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        .quiz-container {
+            background-color: #948fa8;
+            padding: 80px;
+            border-radius: 15px;
+            box-shadow: 0 0 6px rgba(123, 69, 69, 0.1);
+            width: 110%;
+            max-width: 1000px;
+        }
+
+        .question {
+            color: #06015d;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #48596e;
+            border-radius: 4px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .question:hover {
+            background-color: #499ab5;
+            cursor: pointer;
+        }
+
+        .options {
+            list-style: none;
+            padding: 0;
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        .options li {
+            margin-bottom: 8px;
+        }
+
+        input[type="radio"],
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        button {
+            display: block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #e2e6ea;
+            color: rgb(101, 199, 126);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #e30c0c;
+        }
+
+        #results-container {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div class="quiz-container">
+        <h1>The Serious Quiz</h1>
+        <img src="logo.jpg" width="400" height="125">
+        <img src="daamn.gif" width="500" height="125">
+
+            <nav>
+                <ul>
+                    <a href="contact-us.html">
+                    <li>Contact</li></a>
+                    <a href="about-us.html">
+                    <li>About</li></a>
+                    <a href="login.html">
+                    <li>Login</li></a>
+                    <a href="homepage.html">
+                    <li>homepage</li></a>
+                </ul>
+            </nav>
+        <form id="quiz-form">
+            <button type="submit">Submit Quiz</button>
+        </form>
+        <div id="results-container" style="display: none;">
+            <h2>Quiz Results</h2>
+            <p id="score"></p>
+            <p id="feedback"></p>
+        </div>
+        <audio id="cheerSound" src="cheer.mp3"></audio>
+        <audio id="mehSound" src="meh.mp3"></audio>
+        <audio id="fartSound" src="fart.mp3"></audio>
+        <audio id="passSound" src="pass.mp3"></audio>
+        <audio id="avgSound" src="avg.mp3"></audio>
+        <audio id="failSound" src="fail.mp3"></audio>
+        <audio id="vacaSound" src="vaca-dreamer.mp3"></audio>
+        <audio id="boredSound" src="bored.mp3"></audio>
+    </div>
+
+    <script>
+        const quizContainer = document.getElementById('quiz-form');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreDisplay = document.getElementById('score');
+        const feedbackDisplay = document.getElementById('feedback');
+        const cheerSound = document.getElementById('cheerSound');
+
+        function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+        }
+
+        const questions = [
+            {
+                question: "What is the chemical symbol for water?",
+                options: ["Ga", "Au", "H2O", "Snuffaluppicus"],
+                correctAnswer: "H2O",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "Who painted the 'Mona Lisa'?",
+                options: ["Mel Brooks", "Puff Daddy", "H. H. Holmes", "Leonardo da Vinci"],
+                correctAnswer: "Leonardo da Vinci",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the capital of Australia?",
+                options: ["Hollywood", "Canberra", "Tamriel", "Mordor"],
+                correctAnswer: "Canberra",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the powerhouse of the cell?",
+                options: ["Mitochondria", "at&t", "Auxin", "Flukeworm"],
+                correctAnswer: "Mitochondria",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "In what year did WWII end?",
+                options: ["1947", "1945", "1876", "2016"],
+                correctAnswer: "1945",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the currency of Japan?",
+                options: ["Sectums", "Bottle tops", "Japanese Yen", "Abraham Lincoln"],
+                correctAnswer: "Japanese Yen",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "(Select all that apply): What devices are considered androids?",
+                options: ["Apple", "Samsung", "Canon", "Motorola"],
+                correctAnswer: ["Samsung", "Motorola"],
+                type: "checkbox",
+                points: 2
+            },
+            {
+                question: "What is the largest planet in our solar system?",
+                options: ["Mercury", "Jupiter", "The Sun", "Raspucia"],
+                correctAnswer: "Jupiter",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "Who wrote the play 'Hamlet'?",
+                options: ["George Washington", "J.K Rowling", "William Shakespeare", "Stephen King"], 
+                correctAnswer: "William Shakespeare",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the highets mountain in the world?",
+                options: ["Mount Rushmore", "Mount Everest", "Mount Clemmins", "Luke Skywalker"],
+                correctAnswer: "Mount Everest",
+                type: "radio",
+                points: 2
+            },
+
+            {
+                question: "What is the speed of light in a vacuum (approximately)?",
+                options: ["20 miles per hour", "2, 000, 000 miles per mile", "69-96", "3x10^8 meters per second"],
+                correctAnswer: "3x10^8 meters per second",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "Who developed the theory of relativity?",
+                options: ["George Lucas", "Donald Trump", "Albert Einstein", "Ad Rock"],
+                correctAnswer: "Albert Einstein",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the chemical symbol for Oxygen?",
+                options: ["O2", "69", "ATL", "O"],
+                correctAnswer: "O",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the name of Earth's natural satellite?",
+                options: ["The Sun", "The Moon", "Saturn", "The Atmosphere"],
+                correctAnswer: "The Moon",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "If you fill a glass of water halfway, What would be the scenario?",
+                options: ["Half empty", "Half full", "Teletubbies", "Reimmans Sum"],
+                correctAnswer: ["Half empty", "Half full"],
+                type: "checkbox",
+                points: 2
+            },
+            {
+                question: "What is the longest river in the world?",
+                options: ["Cathedral Caverns", "Amazon River", "Scottsboro", "Nile River"], 
+                correctAnswer: "Amazon River",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the boiling point of water at standard atmospheric pressure (in Celsius)?",
+                options: ["350 C", "100 C", "69 C", "196 C"],
+                correctAnswer: "100 C",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the chemical symbol for sodium?",
+                options: ["Na", "N/A", "C02", "502"],
+                correctAnswer: "Na",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the name of the galaxy that is in our solar system?",
+                options: ["George Lopez", "Milky Way", "B12", "Noculus"],
+                correctAnswer: "Milky Way",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the value of pi to 6 decimals?",
+                options: ["3.141516", "3.146793", "3.141592", "3.141111"],
+                correctAnswer: "3.141592",
+                type: "radio",
+                points: 2
+            },
+
+            {
+                question: "Who wrote the novel 'Pride and Prejudice'",
+                options: ["Jane Austen", "Miranda Wright", "Jason Carpet", "Kevin Ham"],
+                correctAnswer: "Jane Austen",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the freezing point of water at standard atmospheric pressure (in Celsius)?",
+                options: ["-6 C", "2 C", "0 C", "45 C"],
+                correctAnswer: "0 C",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "Who discovered pinicillin?",
+                options: ["John Antony", "Sean piniliski", "Penelope Sars", "Alexander Fleming"],
+                correctAnswer: "Alexander Fleming",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the second largest planet in our solar syatem?",
+                options: ["Mars", "Saturn", "Uranus", "Earth"],
+                correctAnswer: "Saturn",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the chemical symbol for Iron?",
+                options: ["TB", "He", "Fe", "Ga"],
+                correctAnswer: "Fe",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "Who painted 'Starry Night'?",
+                options: ["Jason Aldean", "Alexander Bach", "Vincent van Gogh", "Leonardo da Vinci"],
+                correctAnswer: "Vincent van Gogh",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "Who wrote the book 'To Kill a Mockingbird'?",
+                options: ["Julian Gyles", "Devon Barkley", "Harper Lee", "William Taft"],
+                correctAnswer: "Harper Lee",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the name of the Earth's atmosphere layer closest to the surface?",
+                options: ["Troposphere", "Hemisphere", "Stratosphere", "Stegosaurusphere"],
+                correctAnswer: "Troposphere",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "Who developed the laws of motion and universal gravitation?",
+                options: ["Albert Einstein", "Isaac Newton", "Benjamin Franklin", "Peter Griffin's chin"],
+                correctAnswer: "Isaac Newton",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the chemical symbol for magnesium?",
+                options: ["Ma", "No", "Mf", "Mg"],
+                correctAnswer: "Mg",
+                type: "radio",
+                points: 2
+            },
+
+            {
+                question: "What is the name of unit of electrical resistance?",
+                options: ["V", "Amp", "Ohm", "kW"],
+                correctAnswer: "Ohm",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the chemical symbol for Silver?",
+                options: ["Az", "Ag", "Nv", "Mu"], 
+                correctAnswer: "Ag",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "Who founded Walmart?",
+                options: ["Wolly Winkle", "Bud Walton", "Walt Disney", "Sam Walton"],
+                correctAnswer: ["Bud Walton", "Sam Walton"],
+                type: "checkbox",
+                points: 2
+            },
+            {
+                question: "What is the term for the practice of growing a single crop over a large area?",
+                options: ["Apiculture", "Popculture", "Monoculture", "Herbiculture"],
+                correctAnswer: "Monoculture",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the process of tilling the soil to prepare it for planting called?",
+                options: ["Tilling", "Plowing", "Mowing", "Fertilizing"],
+                correctAnswer: "Plowing",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What type of nutrient, often found in fertilizers, is represented by the letter 'P'?",
+                options: ["Potassium", "Phosphorus", "Protonics", "Phosphate"],
+                correctAnswer: "Phosphorus",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the primary source of energy for photosynthesis in plants?",
+                options: ["Rain", "Oxygen", "Sunlight", "Cotton Swabs"],
+                correctAnswer: "Sunlight",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the term for the raising of honeybees for the production of honey and beeswax?",
+                options: ["Agriculture", "Tribaculture", "Apiculture", "Magaculture"],
+                correctAnswer: "Apiculture",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the process of supplying water to crops by artificial means?",
+                options: ["Irrigation", "Irritation", "Run-Off", "Condensation"],
+                correctAnswer: "Irrigation",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the name for animals raised for meat, milk or other products?",
+                options: ["Production", "Supply", "Livestock", "Life stocks"],
+                correctAnswer: "Livestock",
+                type: "radio",
+                points: 2
+            },
+
+            {
+                question: "What is the term for the science and art of cultivating soil, growing crops, and raising livestock?",
+                options: ["Hordiculture", "Monoculture", "Agriculture", "Apiculture"],
+                correctAnswer: "Agriculture",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the layer of soil in which most plant roots grow?",
+                options: ["Auxin", "Topsoil", "Bottomsoil", "Uppersoil"], 
+                correctAnswer: "Topsoil",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the term for a plant that grows where it is not wanted and competes with cultivated plants? ",
+                options: ["Stems", "Successors", "Weed", "Competition"],
+                correctAnswer: "Weed",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the process of harvesting grapes for wine making called?",
+                options: ["Milling", "Vintage", "Vining", "Vineyarding"],
+                correctAnswer: "Vintage",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the practice of rotating different crops in the same area across a sequence of growing seasons?",
+                options: ["Herb rotation", "Trial and Error", "Cultivation", "Crop rotation"],
+                correctAnswer: "Crop rotation",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the term for feed given to domestic animals?",
+                options: ["Wheats", "Fodder", "Feed", "Nutrients"],
+                correctAnswer: "Fodder",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What's the process by which pollen is transferred from the male part of the flower to the female part, enabling fertilization and reproduction?",
+                options: ["Transperation", "Fertilization", "Pollination", "Globalization"],
+                correctAnswer: "Pollination",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What's the term for the cultivation of trees and shrubs for timber, fruit, nuts and other products?",
+                options: ["Supculture", "Arboriculture", "Monoculture", "Globiculture"],
+                correctAnswer: "Arboriculture",
+                type: "radio",
+                points: 2
+            },
+
+            {
+                question: "What is the name for the farming of aquatic organisms such as fish, crustaceans, and mollusks?",
+                options: ["Amphibiculture", "Waterculture", "Apiculture", "Aquaculture"],
+                correctAnswer: "Aquaculture",
+                type: "radio",
+                points: 2
+            },
+            {
+                question: "What is the term for the organic material that is formed when plant and animal matter decays?",
+                options: ["Debris", "Compost", "Fertilizer", "Fat deposits"],
+                correctAnswer: "Compost",
+                type: "radio",
+                points: 2
+            },
+
+            ];
+
+                let question = [
+        
+            {id: 1, text: "Question 1"},
+            {id: 2, text: "Question 2"},
+            {id: 3, text: "Question 3"},
+            {id: 4, text: "Question 4"},
+            {id: 5, text: "Question 5"},
+            {id: 6, text: "Question 6"},
+            {id: 7, text: "Question 7"},
+            {id: 8, text: "Question 8"},
+            {id: 9, text: "Question 9"},
+            {id: 10, text: "Question 10"},
+            {id: 11, text: "Question 11"},
+            {id: 12, text: "Question 12"},
+            {id: 13, text: "Question 13"},
+            {id: 14, text: "Question 14"},
+            {id: 15, text: "Question 15"},
+            {id: 16, text: "Question 16"},
+            {id: 17, text: "Question 17"},
+            {id: 18, text: "Question 18"},
+            {id: 19, text: "Question 19"},
+            {id: 20, text: "Question 20"},
+            {id: 21, text: "Question 21"},
+            {id: 22, text: "Question 22"},
+            {id: 23, text: "Question 23"},
+            {id: 24, text: "Question 24"},
+            {id: 25, text: "Question 25"},
+            {id: 26, text: "Question 26"},
+            {id: 27, text: "Question 27"},
+            {id: 28, text: "Question 28"},
+            {id: 29, text: "Question 29"},
+            {id: 30, text: "Question 30"},
+            {id: 31, text: "Question 31"},
+            {id: 32, text: "Question 32"},
+            {id: 33, text: "Question 33"},
+            {id: 34, text: "Question 34"},
+            {id: 35, text: "Question 35"},
+            {id: 36, text: "Question 36"},
+            {id: 37, text: "Question 37"},
+            {id: 38, text: "Question 38"},
+            {id: 39, text: "Question 39"},
+            {id: 40, text: "Question 40"},
+            {id: 41, text: "Question 41"},
+            {id: 42, text: "Question 42"},
+            {id: 43, text: "Question 43"},
+            {id: 44, text: "Question 44"},
+            {id: 45, text: "Question 45"},
+            {id: 46, text: "Question 46"},
+            {id: 47, text: "Question 47"},
+            {id: 48, text: "Question 48"},
+            {id: 49, text: "Question 49"},
+            {id: 50, text: "Question 50"}
+            ];
+
+        questions.sort(() => Math.random() - 0.5);
+            
+        function displayQuestions() {
+            questions.forEach((questionData, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+                questionDiv.innerHTML = `<p>${index + 1}. ${questionData.question}</p>`;
+
+                const optionsList = document.createElement('ul');
+                optionsList.classList.add('options');
+
+                questionData.options.forEach(option => {
+                    const listItem = document.createElement('li');
+                    const input = document.createElement('input');
+                    input.type = questionData.type;
+                    input.name = `question-${index}`;
+                    input.value = option;
+                    input.id = `q${index}-${option.replace(/ /g, '_')}`; // Unique ID for label association
+
+                    const label = document.createElement('label');
+                    label.textContent = option;
+                    label.setAttribute('for', `q${index}-${option.replace(/ /g, '_')}`);
+
+                    listItem.appendChild(input);
+                    listItem.appendChild(label);
+                    optionsList.appendChild(listItem);
+                });
+
+                questionDiv.appendChild(optionsList);
+                quizContainer.insertBefore(questionDiv, document.querySelector('button[type="submit"]'));
+            });
+        }
+
+        function calculateScore() {
+            let score = 0;
+            questions.forEach((questionData, index) => {
+                const selectedOptions = Array.from(quizContainer.querySelectorAll(`input[name="question-${index}"]:checked`)).map(input => input.value);
+
+                if (questionData.type === 'radio') {
+                    if (selectedOptions[0] === questionData.correctAnswer) {
+                        score += questionData.points;
+                    }
+                } else if (questionData.type === 'checkbox') {
+                    const isCorrect = questionData.correctAnswer.length === selectedOptions.length && questionData.correctAnswer.every(item => selectedOptions.includes(item));
+                    if (isCorrect) {
+                        score += questionData.points;
+                    }
+                }
+            });
+            return score;
+        }
+
+        quizContainer.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const finalScore = calculateScore();
+            scoreDisplay.textContent = `Your Score: ${finalScore} / 100`; 
+            let feedbackText = "";
+
+            if (finalScore >= 80) {
+                feedbackText = "Alright, Smartass!! Boredom is as dumb as a board, You need to find the key to nonsense. You are a Bored Board.";
+                boredSound.play();
+            } else if (finalScore >= 60) {
+                feedbackText = "I'm just glad you had some fun. Even at my expenses. You are a high priced Zelephant.";
+                avgSound.play();
+            } else if (finalScore >= 40) {
+                feedbackText = "How was your last vacation in the dream you had about being on vacation? You are a Vaca-Dreamer!";
+                vacaSound.play();
+            } else if (finalScore >= 20) {
+                feedbackText = "Daaaamn, like its Friday. You had a blast like it's sonic. You wine and dine like a baby. I'm stacking similes like Lil' Wayne. You are a Treehouse Rat Tattooer.";
+                damnSound.play();
+            } else if (finalScore <= 20) {
+                feedbackText = "You really suck!!! Better luck next time, you turn sniffer."
+                failSound.play();
+            }
+            feedbackDisplay.textContent = feedbackText;
+
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            });
+
+        displayQuestions();
+    </script>
+    
+</body>
+</html>

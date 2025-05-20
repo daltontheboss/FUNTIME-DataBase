@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>?</title>
+    <style>
+
+        h1 {
+            text-align: center;
+            
+        }
+
+
+        body {
+                   background-color: #646446; /* Light Blue */
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+         nav ul {
+            list-style-type: none;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        .quiz-container {
+            background-color: #9d9769;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 6px rgba(123, 69, 69, 0.1);
+            width: 80%;
+            max-width: 700px;
+        }
+
+        .question {
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #13b81e;
+            border-radius: 4px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .question:hover {
+            background-color: #bace62;
+            cursor: pointer;
+        }
+
+        .options {
+            list-style: none;
+            padding: 0;
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        .options li {
+            margin-bottom: 8px;
+        }
+
+        input[type="radio"],
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        button {
+            display: block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #e2e6ea;
+            color: rgb(101, 199, 126);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #e30c0c;
+        }
+
+        #results-container {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div class="quiz-container">
+        <h1>??</h1>
+         <img src="logo.jpg" width="400" height="125">
+
+            <nav>
+                <ul>
+                    <a href="contact-us.html">
+                    <li>Contact</li></a>
+                    <a href="about-us.html">
+                    <li>About</li></a>
+                    <a href="login.html">
+                    <li>Login</li></a>
+                    <a href="homepage.html">
+                    <li>homepage</li></a>
+                </ul>
+            </nav>
+        <form id="quiz-form">
+            <button type="submit">Submit Quiz</button>
+        </form>
+        <div id="results-container" style="display: none;">
+            <h2>Quiz Results</h2>
+            <p id="score"></p>
+            <p id="feedback"></p>
+        </div>
+        <audio id="cheerSound" src="cheer.mp3"></audio>
+        <audio id="mehSound" src="meh.mp3"></audio>
+        <audio id="fartSound" src="fart.mp3"></audio>
+        <audio id="damnSound" src="damn.mp3"></audio>
+        <audio id="vacaSound" src="vaca-dreamer.mp3"></audio>
+        <audio id="boredSound" src="bored.mp3"></audio>
+    </div>
+
+    <script>
+        const quizContainer = document.getElementById('quiz-form');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreDisplay = document.getElementById('score');
+        const feedbackDisplay = document.getElementById('feedback');
+        const cheerSound = document.getElementById('cheerSound');
+
+        const questions = [
+            {
+                question: "What is 7 + 8",
+                options: ["15", "37", "69", "96"],
+                correctAnswer: "15",
+                type: "radio",
+                points: 10
+            },
+            {
+                question: "",
+                options: [""],
+                correctAnswer: [""],
+                type: "checkbox",
+                points: 10
+            },
+            {
+                question: "",
+                options: [""],
+                correctAnswer: "",
+                type: "radio",
+                points: 10
+            },
+            {
+                question: "",
+                options: [""],
+                correctAnswer: [""],
+                type: "checkbox",
+                points: 10
+            },
+            {
+                question: "",
+                options: [""],
+                correctAnswer: "",
+                type: "radio",
+                points: 10
+            },
+            {
+                question: "",
+                options: [""],
+                correctAnswer: "",
+                type: "radio",
+                points: 1
+            },
+            {
+                question: "",
+                options: [""],
+                correctAnswer: "",
+                type: "radio",
+                points: 10
+            },
+            {
+                question: "",
+                options: [""],
+                correctAnswer: "",
+                type: "radio",
+                points: 10
+            },
+            {
+                question: "",
+                options: [""],
+                correctAnswer: "",
+                type: "radio",
+                points: 10
+            },
+            {
+                question: "",
+                options: [""],
+                correctAnswer: "",
+                type: "radio",
+                points: 10
+            },
+
+            ];
+
+            
+        function displayQuestions() {
+            questions.forEach((questionData, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+                questionDiv.innerHTML = `<p>${index + 1}. ${questionData.question}</p>`;
+
+                const optionsList = document.createElement('ul');
+                optionsList.classList.add('options');
+
+                questionData.options.forEach(option => {
+                    const listItem = document.createElement('li');
+                    const input = document.createElement('input');
+                    input.type = questionData.type;
+                    input.name = `question-${index}`;
+                    input.value = option;
+                    input.id = `q${index}-${option.replace(/ /g, '_')}`; // Unique ID for label association
+
+                    const label = document.createElement('label');
+                    label.textContent = option;
+                    label.setAttribute('for', `q${index}-${option.replace(/ /g, '_')}`);
+
+                    listItem.appendChild(input);
+                    listItem.appendChild(label);
+                    optionsList.appendChild(listItem);
+                });
+
+                questionDiv.appendChild(optionsList);
+                quizContainer.insertBefore(questionDiv, document.querySelector('button[type="submit"]'));
+            });
+        }
+
+        function calculateScore() {
+            let score = 0;
+            questions.forEach((questionData, index) => {
+                const selectedOptions = Array.from(quizContainer.querySelectorAll(`input[name="question-${index}"]:checked`)).map(input => input.value);
+
+                if (questionData.type === 'radio') {
+                    if (selectedOptions[0] === questionData.correctAnswer) {
+                        score += questionData.points;
+                    }
+                } else if (questionData.type === 'checkbox') {
+                    const isCorrect = questionData.correctAnswer.length === selectedOptions.length && questionData.correctAnswer.every(item => selectedOptions.includes(item));
+                    if (isCorrect) {
+                        score += questionData.points;
+                    }
+                }
+            });
+            return score;
+        }
+
+        quizContainer.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const finalScore = calculateScore();
+            scoreDisplay.textContent = `Your Score: ${finalScore} / 100`; 
+            let feedbackText = "";
+
+           if (finalScore >= 80) {
+                feedbackText = "Alright, Smartass!! Boredom is as dumb as a board, You need to find the key to nonsense. You are a Bored Board.";
+                boredSound.play();
+            } else if (finalScore >= 60) {
+                feedbackText = "I'm just glad you had some fun. Even at my expenses. You are a high priced Zelephant.";
+                avgSound.play();
+            } else if (finalScore >= 40) {
+                feedbackText = "How was your last vacation in the dream you had about being on vacation? You are a Vaca-Dreamer!";
+                mehSound.play();
+            } else if (finalScore >= 20) {
+                feedbackText = "Daaaamn, like its Friday. You had a blast like it's sonic. You wine and dine like a baby. I'm stacking similes like Lil' Wayne. You are a Treehouse Rat Tattooer.";
+                damnSound.play();
+            } else if (finalScore <= 20) {
+                feedbackText = "Wow! You just made a 20 or less. You lick donkey teeth.";
+                fartSound.play();
+            }
+            feedbackDisplay.textContent = feedbackText;
+
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            });
+
+        displayQuestions();
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Puzzle</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', 'Courier New';
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Times New Roman', 'Arial Narrow Bold', 'Franklin Gothic Medium', 'Arial Narrow';
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #5e2323;
+            margin: 0;
+        }
+
+        #game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #puzzle-area {
+            display: grid;
+            grid-template-columns: repeat(4, 80px);
+            grid-template-rows: repeat(4, 80px);
+            width: 320px;
+            height: 320px;
+            border: 2px dashed #6c6767;
+            margin-bottom: 20px;
+        }
+
+        #pieces-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+
+        .puzzle-piece {
+            width: 76px;
+            height: 76px;
+            border: 2px solid #000000;
+            box-sizing: border-box;
+            cursor: grab;
+            background-repeat: no-repeat;
+            background-size: 320px 320px;
+            margin: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8em;
+            color: #000000;
+        }
+
+        .puzzle-slot {
+            width: 80px;
+            height: 80px;
+            /* border: 1px solid #eee; */ /* Optional: for visual guidance */
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .placed {
+            border: none;
+        }
+
+    #animation-container {
+        position: fixed;
+        top: 65%;
+        left: -300px; /* Start off-screen */
+        transform: translateY(-80%);
+        width: auto;
+        height: auto;
+        z-index: 1000;
+        opacity: 0; /* Initially hidden */
+    }
+
+    #celebration-gif {
+        display: block;
+        max-width: 200px;
+        height: auto;
+    }
+
+/* Animation definition */
+@keyframes slideAcross {
+  0% {
+    left: -200px; /* Start position */
+    opacity: 0;
+  }
+  100% {
+    left: 100%;    /* End position */
+    opacity: 2;
+    transform: translate(-50%, -40px); /* Adjust for clean exit */
+    opacity: 1;
+  }
+}
+/* Class to trigger the animation */
+.animate {
+  animation: slideAcross 2s ease-in-out forwards; /* Apply the animation */
+}
+
+        #message-container {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        #timer {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Image Puzzle</h1>
+
+    <div id="timer">Time Left: 10:00</div>
+
+    <div id="game-container">
+        <div id="pieces-container"></div>
+        <div id="puzzle-area"></div>
+    </div>
+
+    <div id="message-container"></div>
+    <audio id="fartSound" src="fart.mp3"></audio>
+
+    <div id="animation-container">
+    <img id="celebration-gif" src="daamn.gif" alt="Celebration Animation">
+    </div>
+
+    <script>
+        const piecesContainer = document.getElementById('pieces-container');
+        const puzzleArea = document.getElementById('puzzle-area');
+        const messageContainer = document.getElementById('message-container');
+        const timerDisplay = document.getElementById('timer');
+        const imageSrc = 'me3.jpg'; // Ensure this matches your image name
+        const gridSize = 4;
+        const totalPieces = gridSize * gridSize;
+        let pieces = [];
+        let slots = [];
+        let startTime;
+        let timerInterval;
+        const timeLimitSeconds = 600; // 10 minutes
+
+        function createPuzzle() {
+            for (let i = 0; i < totalPieces; i++) {
+                const piece = document.createElement('div');
+                piece.classList.add('puzzle-piece');
+                const row = Math.floor(i / gridSize);
+                const col = i % gridSize;
+                piece.style.backgroundImage = `url('${imageSrc}')`;
+                piece.style.backgroundPosition = `-${col * 80}px -${row * 80}px`;
+                piece.dataset.index = i;
+                piece.draggable = true;
+                pieces.push(piece);
+
+                const slot = document.createElement('div');
+                slot.classList.add('puzzle-slot');
+                slot.dataset.slotIndex = i;
+                slots.push(slot);
+            }
+        }
+
+        function shufflePieces() {
+            pieces.sort(() => Math.random() - 0.5);
+            pieces.forEach(piece => {
+                piecesContainer.appendChild(piece);
+            });
+            slots.forEach(slot => {
+                puzzleArea.appendChild(slot);
+            });
+        }
+
+        function startTimer() {
+            startTime = new Date().getTime();
+            timerInterval = setInterval(() => {
+                const currentTime = new Date().getTime();
+                const elapsedTime = Math.floor((currentTime - startTime) / 1000);
+                const timeLeft = timeLimitSeconds - elapsedTime;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    messageContainer.textContent = "Time's up! You didn't solve the puzzle.";
+                    disableDragging();
+                    timerDisplay.textContent = "Time Left: 0:00";
+                    return;
+                }
+
+                const minutes = Math.floor(timeLeft / 60).toString().padStart(1, '0');
+                const seconds = (timeLeft % 60).toString().padStart(2, '0');
+                timerDisplay.textContent = `Time Left: ${minutes}:${seconds}`;
+            }, 1000);
+        }
+
+        function isSolved() {
+            const placedPieces = puzzleArea.querySelectorAll('.puzzle-piece');
+            if (placedPieces.length !== totalPieces) {
+                return false; // Not solved if not all pieces are in the puzzle area
+            }
+            for (let i = 0; i < placedPieces.length; i++) {
+                const piece = placedPieces[i];
+                if (!piece.dataset.originalIndex || parseInt(piece.dataset.originalIndex) !== i) {
+                    return false; // Not solved if any piece is in the wrong slot
+                }
+            }
+            return true; // All pieces are in the correct slots
+        }
+
+        function handleDragStart(event) {
+            event.dataTransfer.setData('text/plain', event.target.dataset.index);
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            const draggedIndex = event.dataTransfer.getData('text/plain');
+            const draggedPiece = pieces.find(p => p.dataset.index === draggedIndex);
+            const targetSlot = event.target.closest('.puzzle-slot');
+
+            if (targetSlot && targetSlot.children.length === 0 && draggedPiece) {
+                draggedPiece.dataset.originalIndex = targetSlot.dataset.slotIndex;
+                targetSlot.appendChild(draggedPiece);
+                draggedPiece.classList.add('placed');
+                draggedPiece.style.width = '80px';
+                draggedPiece.style.height = '80px';
+                draggedPiece.style.margin = '0';
+
+                // Check if the puzzle is solved AFTER a piece is dropped
+                if (isSolved()) {
+                    clearInterval(timerInterval);
+                    const endTime = new Date().getTime();
+                    const solveTimeSeconds = Math.floor((endTime - startTime) / 1000);
+                    displayResult(solveTimeSeconds);
+                    disableDragging();
+                }
+            }
+        }
+
+        function handleDragLeave(event) {
+            // Optional: Add visual feedback when leaving a slot
+        }
+
+        function disableDragging() {
+            pieces.forEach(piece => {
+                piece.draggable = false;
+                piece.style.cursor = 'default';
+            });
+        }
+
+        
+
+        function displayResult(time) {
+            let message = "Congratulations! You solved the puzzle in ";
+            const minutes = Math.floor(time / 60);
+            const seconds = time % 60;
+            message += `${minutes > 0 ? minutes + ' minute' + (minutes > 1 ? 's ' : ' ') : ''}${seconds} seconds. `;
+
+            function puzzleCompleted() {
+  const animationContainer = document.getElementById('animation-container');
+  animationContainer.classList.add('animate');
+
+  // Optional: Remove the 'animate' class after it finishes (if you want it to play only once)
+  setTimeout(() => {
+    animationContainer.classList.remove('animate');
+    // Optionally reset its position and opacity if needed for future triggers
+    // animationContainer.style.left = '-300px';
+    // animationContainer.style.opacity = '0';
+  }, 2000); // Match the animation duration
+}
+
+// Example trigger (adapt to your puzzle completion logic)
+setTimeout(puzzleCompleted, 2000);
+
+            if (time <= 60) {
+                message += "Youre a genius mate. Well, for a baby back ribeyed porkchop!!";
+                fartSound.play()
+            }else if (time <= 120) {
+                message += "You're a puzzle master!";
+                fartSound.play()
+            } else if (time < 180) {
+                message += "Excellent work!";
+                fartSound.play()
+            } else if (time < 240) {
+                message += "That was really nice. Check please... I cannot sit here now!";
+                fartSound.play()
+            } else if (time < 300) {
+                message += "Great work, youre pretty good!";
+                fartSound.play()
+            } else if (time < 360) {
+                message += "That was pretty cool. This must not be your first time!";
+                fartSound.play()
+            } else if (time < 420) {
+                message += "You did pretty good. My grandmother would approve!";
+                fartSound.play()
+            } else if (time < 480) {
+                message += "Morgan Freeman called and wants his beard back. You passed with a Hi C!";
+                fartSound.play()
+            } else if (time < 540) {
+                message += "You honestly couldve done better. But not bad for your last time!";
+                fartSound.play()
+            } else if (time < 600) {
+                message += "You honestly couldve done better. But not bad for your last time!";   
+                fartSound.play()
+            } else {
+                message += "You are failure!";
+            }
+
+            messageContainer.textContent = message;
+        }
+
+        // Initialize the puzzle
+        createPuzzle();
+        shufflePieces();
+        startTimer();
+
+        // Add event listeners
+        pieces.forEach(piece => {
+            piece.addEventListener('dragstart', handleDragStart);
+        });
+
+        puzzleArea.addEventListener('dragover', handleDragOver);
+        puzzleArea.addEventListener('drop', handleDrop);
+        // puzzleArea.addEventListener('dragleave', handleDragLeave); // Optional
+    </script>
+</body>
+</html>
